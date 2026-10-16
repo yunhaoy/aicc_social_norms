@@ -9,6 +9,22 @@ from aicc_social_norms.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
 app = typer.Typer()
 
 
+def read_raw_sql(sql_path: str | Path) -> str:
+    """Read a SQL file from the raw data directory.
+
+    Relative paths are resolved against ``data/raw``; absolute paths are used
+    as provided.
+    """
+    path = Path(sql_path)
+    if not path.is_absolute():
+        path = RAW_DATA_DIR / path
+
+    if path.suffix.lower() != ".sql":
+        raise ValueError(f"Expected a .sql file, got: {path}")
+
+    return path.read_text(encoding="utf-8")
+
+
 @app.command()
 def main(
     # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
